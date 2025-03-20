@@ -6,23 +6,21 @@ import java.util.Date;
 import java.util.Scanner;
 
 import model.entities.Reservation;
+import model.exceptions.DomainException;
 
 public class Program {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args)  {
 		Scanner scn = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); 
-		
-		System.out.println("Room number: ");
-		int number = scn.nextInt();
-		System.out.println("Check-in date (dd/MM/yyyy): ");
-		Date checkIn = sdf.parse(scn.next());
-		System.out.println("Check-in date (dd/MM/yyyy): ");
-		Date checkOut = sdf.parse(scn.next());
-		if(! checkOut.after(checkIn)) {
-			System.out.println("Error in reservation: Check-out date must be after check-in date");
-		}
-		else {
+		try {
+			System.out.println("Room number: ");
+			int number = scn.nextInt();
+			System.out.println("Check-in date (dd/MM/yyyy): ");
+			Date checkIn = sdf.parse(scn.next());
+			System.out.println("Check-out date (dd/MM/yyyy): ");
+			Date checkOut = sdf.parse(scn.next());
+			
 			Reservation reservation = new Reservation(number, checkIn, checkOut);
 			System.out.println("Reservation: " + reservation);
 			
@@ -30,21 +28,18 @@ public class Program {
 			System.out.println("Enter data to update the reservation:");
 			System.out.println("Check-in date (dd/MM/yyyy): ");
 		    checkIn = sdf.parse(scn.next());
-			System.out.println("Check-in date (dd/MM/yyyy): ");
+			System.out.println("Check-out date (dd/MM/yyyy): ");
 			checkOut = sdf.parse(scn.next());
 			
-			Date now = new Date();
-			
-				String error = reservation.updatesDates(checkIn, checkOut);
-				if(error != null) {
-					System.out.println("Error in reservation: " + error);
-				}
-				else {
-					System.out.println("Reservation: " + reservation);
-				}
-			
-			}
-		scn.close();
+			reservation.updatesDates(checkIn, checkOut);
+			System.out.println("Reservation: " + reservation);
 		}
+		catch(ParseException e){
+			System.out.println("Invalid date format");
+		}
+		catch(DomainException e){
+			System.out.println("Error in reservation: " + e.getMessage());
+		}
+			scn.close();
 	}
-
+	}
